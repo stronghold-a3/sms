@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<!--
+  FIX: This class is now intentionally consistent with App.tsx's
+  ThemeProvider defaultTheme="dark" (see src/App.tsx). Previously this
+  was hardcoded ahead of two DIFFERENT competing theme systems that could
+  each rewrite this class independently (theme-provider.tsx vs the old
+  ThemeToggle.tsx), causing a flash-of-wrong-theme or a permanent mismatch
+  depending on effect ordering. There is now exactly one theme system
+  (theme-provider.tsx / useTheme), and exactly one supported theme (dark)
+  until a real light-mode design exists in src/index.css.
+-->
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <!-- SEO Meta Tags -->
+  <title>Security Management System | Stronghold A3</title>
+  <meta name="description" content="Offline-First Cloud Security Management System in 3-Bridge Architecture: Cloud SMS with local caching, SMS Gateway fallback, and Viber/Radio mesh for zero-data dead zones. Automates guard tours, incident reports, and scheduling.">
+  <meta name="keywords" content="security agency Tacloban, private guards Eastern Visayas, Zero Liability Security, DOLE certified security, disaster security Philippines, corporate security Leyte">
+  <meta name="author" content="ASilva Innovations">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0A1628">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Stronghold A3 | Premier Security Agency Eastern Visayas">
+  <meta property="og:description" content="Zero-Liability Security Partner. DOLE DO-174 Compliant. Serving Eastern Visayas with advanced risk mitigation solutions.">
+  <meta property="og:image" content="https://zpahlcmuowwwiauffrby.supabase.co/storage/v1/object/public/sop-files/public/Stronghold%20Logo.png">
+  <meta property="og:url" content="https://strongholda3.com">
+  <meta property="og:site_name" content="Stronghold A3 Security Agency">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Stronghold A3 | Zero-Liability Security Partner">
+  <meta name="twitter:description" content="Eastern Visayas' premier security agency offering DOLE-compliant, technologically advanced risk mitigation services.">
+  <meta name="twitter:image" content="https://zpahlcmuowwwiauffrby.supabase.co/storage/v1/object/public/sop-files/public/Stronghold%20Logo.png">
+
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://strongholda3.com">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="https://zpahlcmuowwwiauffrby.supabase.co/storage/v1/object/public/sop-files/public/Stronghold%20Logo.png">
+
+  <!-- Preload Key Assets -->
+  <!--
+    FIX: previously preloaded Montserrat, Poppins, and JetBrains Mono —
+    none of which are used anywhere in this app. The actual brand
+    typefaces (Oswald for display, Roboto Condensed for body, per the
+    Stronghold A3 design brief) are loaded via @import in src/index.css.
+    This preload now matches that, so the browser fetches the fonts the
+    page actually renders with instead of three unrelated typefaces.
+  -->
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=Roboto+Condensed:wght@300;400;500;600;700&display=swap">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+</html>
