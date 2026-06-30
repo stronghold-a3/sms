@@ -1,0 +1,143 @@
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=Roboto+Condensed:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+  FIX: this file previously contained the @tailwind base/components/
+  utilities directives TWICE (once at the top, once again near the
+  bottom after the keyframes/scrollbar rules). Duplicate directives
+  cause Tailwind to inject its base/component/utility layers twice,
+  which silently doubles build size and can cause specificity-order
+  surprises depending on the PostCSS pipeline. There is now exactly
+  one set, at the top, as Tailwind's docs require.
+*/
+
+@layer base {
+  /*
+    FIX: previously declared a single hardcoded dark-navy HSL palette
+    in :root with no corresponding `.dark` / `.light` class variants,
+    even though tailwind.config.ts sets `darkMode: ["class"]` and the
+    app ships a ThemeProvider that toggles `dark`/`light` classes on
+    <html> (see src/components/theme-provider.tsx). The CSS variables
+    below are now scoped under `.dark` to match how shadcn/Tailwind's
+    class-based dark mode is supposed to work, and ThemeToggle.tsx has
+    been updated to only ever apply the `dark` theme until a real
+    light palette is designed (see ThemeToggle.tsx comments) — so in
+    practice `.dark` is always active today, but the CSS no longer
+    silently assumes that forever.
+  */
+  .dark {
+    --background: 215 90% 8%;
+    --foreground: 210 40% 98%;
+    --card: 215 80% 12%;
+    --card-foreground: 210 40% 98%;
+    --popover: 215 80% 10%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 211 100% 25%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 215 50% 18%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 215 40% 20%;
+    --muted-foreground: 210 20% 70%;
+    --accent: 45 100% 50%;
+    --accent-foreground: 215 90% 8%;
+    --destructive: 348 83% 47%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 215 40% 22%;
+    --input: 215 40% 22%;
+    --ring: 45 100% 50%;
+    --radius: 1rem;
+  }
+
+  /*
+    No light-theme variant exists yet. If `.light` is ever applied to
+    <html> without rules here, shadcn's color utilities (bg-background,
+    text-foreground, etc.) fall back to unstyled browser defaults —
+    which is exactly the silent breakage that motivated removing the
+    second, uncoordinated theme system that used to live in
+    ThemeToggle.tsx. Define a real light palette here before exposing
+    a light-mode toggle in the UI again.
+  */
+}
+
+@layer base {
+  * { @apply border-border; }
+  body {
+    @apply text-foreground font-body;
+    background: radial-gradient(circle at 20% 0%, #002b5c 0%, #001b3d 45%, #000c1f 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+  }
+  h1, h2, h3, h4, h5, h6 { @apply font-display; letter-spacing: 0.02em; }
+}
+
+@layer utilities {
+  .font-display { font-family: 'Oswald', sans-serif; }
+  .font-body { font-family: 'Roboto Condensed', sans-serif; }
+
+  /* Liquid Glass */
+  .glass {
+    background: linear-gradient(135deg, rgba(255,255,255,0.10), rgba(255,255,255,0.03));
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    border: 1px solid rgba(255,255,255,0.12);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.18);
+  }
+  .glass-strong {
+    background: linear-gradient(135deg, rgba(0,43,92,0.55), rgba(0,12,31,0.65));
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border: 1px solid rgba(255,215,0,0.18);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.15);
+  }
+  .glass-gold {
+    background: linear-gradient(135deg, rgba(255,215,0,0.16), rgba(255,215,0,0.04));
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,215,0,0.35);
+  }
+  .glass-red {
+    background: linear-gradient(135deg, rgba(220,20,60,0.25), rgba(220,20,60,0.08));
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(220,20,60,0.5);
+  }
+  .text-gold { color: #FFD700; }
+  .pulse-green { animation: pulseG 2s infinite; }
+  .pulse-red { animation: pulseR 1.2s infinite; }
+}
+
+@keyframes pulseG { 0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,0.6)} 50%{box-shadow:0 0 0 6px rgba(34,197,94,0)} }
+@keyframes pulseR { 0%,100%{box-shadow:0 0 0 0 rgba(220,20,60,0.7)} 50%{box-shadow:0 0 0 10px rgba(220,20,60,0)} }
+@keyframes spring { 0%{transform:scale(0.96);opacity:0} 100%{transform:scale(1);opacity:1} }
+.animate-spring { animation: spring 0.3s cubic-bezier(0.34,1.56,0.64,1); }
+.lite-mode .glass, .lite-mode .glass-strong, .lite-mode .glass-gold, .lite-mode .glass-red {
+  backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
+  background: #06122a !important;
+}
+.lite-mode * { animation: none !important; transition: none !important; }
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb { background: rgba(255,215,0,0.25); border-radius: 8px; }
+
+/*
+  FIX: removed an entire block of "platform/builder badge hiding" CSS
+  that was scaffolded for a different tool/platform and had nothing to
+  do with Stronghold A3. Beyond being irrelevant cruft, several of its
+  selectors were dangerously broad for THIS app specifically:
+
+    - `div[style*="z-index: 9999"]`, `[style*="position: fixed"]
+      [style*="bottom"]` would have matched SOSButton.tsx's panic
+      button (fixed bottom-5 right-5 z-50) and Toasts.tsx's toast
+      stack (fixed bottom-24 right-4 z-[60]) by coincidence of
+      position/z-index, hiding safety-critical UI.
+    - `body > div:last-child[style*="position: fixed"]` is a DOM-order
+      dependent selector that could silently start hiding whichever
+      fixed-position element happens to mount last, with no relation
+      to whether it's actually a third-party badge.
+
+  None of this targeted anything that exists in the Stronghold A3
+  codebase. If a specific third-party badge needs hiding in the
+  future, target its actual, known selector — not broad heuristics
+  that can collide with real in-app UI.
+*/
